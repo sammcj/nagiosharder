@@ -28,15 +28,21 @@ class NagiosHarder
     attr_accessor :nagios_url, :user, :password, :default_options, :default_cookies, :version, :nagios_time_format
     include HTTParty::ClassMethods
 
-    def initialize(nagios_url, user, password, version = 3, nagios_time_format = nil, ssl_verify = true)
+    def initialize(nagios_url, user, password, http_auth = 'basic' version = 3, nagios_time_format = nil, ssl_verify = true)
       @nagios_url = nagios_url.gsub(/\/$/, '')
       @user = user
       @password = password
+      @http_auth = http_auth
       @default_options = {:verify => ssl_verify}
       @default_cookies = {}
       @version = version
       debug_output if ENV['DEBUG']
-      basic_auth(@user, @password) if @user && @password
+      case http_auth
+      when 'basic'
+        basic_auth(@user, @password) if @user && @password
+      when 'digest'
+        digest_auth(@user, @password) if @user && @password
+      end
       @nagios_time_format = case nagios_time_format
                             when 'us'
                               "%m-%d-%Y %H:%M:%S"
