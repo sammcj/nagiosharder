@@ -14,6 +14,7 @@ Here are some examples to get you started with the Ruby API:
     user        = 'user'
     pass        = 'pass'
     version     = 3
+    http_auth   = 'basic'
     time_format = 'iso8601'
     verify_ssl  = true
     
